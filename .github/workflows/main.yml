@@ -28,10 +28,12 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          set +o pipefail
           git clone https://github.com/1kovalevskiy/tg-bot-voice-to-text.git || true
+          set -o pipefail
           cd /home/nikita/tg-bot-voice-to-text
           git pull
-          echo ${{ secrets.HOST_CHATS }} > config.yml
+          echo "${{ secrets.HOST_CHATS }}" > config.yml
           echo "TELEGRAM_TOKEN=${{ secrets.HOST_TELEGRAM_TOKEN }}" > .env
           echo "YANDEX_OAUTH=${{ secrets.HOST_YANDEX_OAUTH }}" >> .env
           sudo docker stop $(sudo docker ps -a -q)
