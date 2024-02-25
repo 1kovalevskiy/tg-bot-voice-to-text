@@ -10,4 +10,4 @@ services:
     image: 1kovalevskiy/tg-bot-voice-to-text:latest
     command: ["/app", "--config-path=/config.yml"]
     volumes:
-      - ${PWD}/config.yml:/config.yml
+      - ./config.yml:/config.yml
