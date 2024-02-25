@@ -16,9 +16,9 @@ type (
 	}
 
 	Telegram struct {
-		AllowChats    	[]string 	`env-required:"true" yaml:"allow_chats"	env:"ALLOW_CHATS"`
-		AllowUsers    	[]string 	`env-required:"true" yaml:"allow_users"	env:"ALLOW_USERS"`
-		AlertChat		string		`env-required:"true" yaml:"alert_chat"	env:"ALERT_CHAT"`
+		AllowChats    	[]string 	`env-required:"true" yaml:"allow_chats" env:"ALLOW_CHATS"`
+		AllowUsers    	[]string 	`env-required:"true" yaml:"allow_users" env:"ALLOW_USERS"`
+		AlertChat		string		`env-required:"true" yaml:"alert_chat" env:"ALERT_CHAT"`
 		TelegramToken 	string   	`env:"TELEGRAM_TOKEN"`
 	}
 
