@@ -1,0 +1,51 @@
+name: tg-bot-voice-to-text
+
+on: [push]
+
+jobs:
+  build_and_push_to_docker_hub:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Login to docker.io
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_ID }} --password-stdin
+      - uses: actions/checkout@master
+      - name: Build tg-bot-voice-to-text
+        run: |
+          docker build -t 1kovalevskiy/tg-bot-voice-to-text:latest -f Dockerfile .
+      - name: Push tg-bot-voice-to-text to docker.io
+        run: docker push 1kovalevskiy/tg-bot-voice-to-text:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+    - name: executing remote ssh commands to deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          git clone https://github.com/1kovalevskiy/tg-bot-voice-to-text.git
+          cd /home/ubuntu/tg-bot-voice-to-text
+          git pull
+          echo ${{ secrets.HOST_CHATS }} > config.yml
+          echo "TELEGRAM_TOKEN=${{ secrets.HOST_TELEGRAM_TOKEN }}"" > .env
+          echo "YANDEX_OAUTH=${{ secrets.HOST_YANDEX_OAUTH }}"" > .env
+          sudo docker stop $(sudo docker ps -a -q)
+          sudo docker-compose rm 1kovalevskiy/tg-bot-voice-to-text:latest
+          sudo docker pull 1kovalevskiy/tg-bot-voice-to-text:latest
+          sudo docker-compose up -d
+
+  send_message:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: send message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: ${{ github.workflow }} успешно выполнен!
