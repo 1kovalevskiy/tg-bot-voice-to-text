@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+
+  app:
+    build: .
+    environment:
+      - ENVIRONMENT=prod
+    env_file: .env
+    container_name: tgapp
+    image: tgapp
+    command: ["/app", "--config-path=/config.yml"]
+    volumes:
+      - ${PWD}/config.yml:/config.yml

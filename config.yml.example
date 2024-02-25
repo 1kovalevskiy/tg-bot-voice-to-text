@@ -1,0 +1,3 @@
+telegram:
+    allow_chats: [-12345, -67890]  # group_ids
+    allow_users: [12345, 67890]  # private_ids
