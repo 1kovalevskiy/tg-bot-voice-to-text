@@ -7,6 +7,10 @@ run:  ### run
 	go run ./cmd/app --config-path="./config.yml"
 .PHONY: run
 
+update-requirements:  ### update-requirements
+	go mod tidy
+.PHONY: update-requirements
+
 fmt: ### check go fmt
 	gofmt -s -w .
 .PHONY: fmt
